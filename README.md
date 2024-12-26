@@ -27,18 +27,18 @@ Welcome to my LangChain repository! This is a collection of projects and experim
    pip install -r requirements.txt
    ```
 
-## Tokens
+## API-KEY
 
-### Why Tokens?
+### Why API-KEY?
 LangChain uses API keys for services like OpenAI, Pinecone, and Weaviate.
-Tokens are required to authenticate and access these services.
+API keys are required to authenticate and access these services.
 
-### How to Get an OpenAI API Key?
+### How to Get an OpenAI API-KEY?
 1. Go to OpenAI API Keys page.
 2. Log in or sign up, create a new secret key, and copy it.
 3. Note: OpenAI API **is not free**; you must purchase credits to use it.
 
-### How to Put Tokens?
+### How to Put Your API-KEY?
 1. Create a environment variable `OPENAI_API_KEY` and put your api_key in `/LangChain/.env` (**NOTE DO NOT SHOW ANYBODY YOUR API KEY!**):
 
 ```bash
@@ -59,6 +59,7 @@ load_dotenv()
 ```
 /LangChain/
     /.../
+    /langchain_env/
     /.env
     /README.md
     /requirements.txt
