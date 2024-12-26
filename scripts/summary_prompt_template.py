@@ -44,7 +44,7 @@ def main():
     response = chain.invoke(input={'information': information})
 
     # Print the response from the model in colored text
-    print(f'{Fore.LIGHTCYAN_EX}ChatGPT:\n{Fore.LIGHTGREEN_EX}{response.content}')
+    print(f'{Fore.LIGHTGREEN_EX}ChatGPT:\n{Fore.LIGHTBLUE_EX}{response.content}')
 
 if __name__ == '__main__':
     main()
