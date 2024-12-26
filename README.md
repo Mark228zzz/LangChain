@@ -79,6 +79,9 @@ A simple chatbot implemented with LangChain:
 ```python
 from langchain.chat_models import ChatOpenAI
 from langchain.chains import ConversationChain
+from dotenv import load_dotenv
+
+load_dotenv()
 
 chat = ChatOpenAI(temperature=0.7)
 chain = ConversationChain(llm=chat)
@@ -91,6 +94,9 @@ Summarize large documents in seconds:
 ```python
 from langchain.document_loaders import PyPDFLoader
 from langchain.chains import SummarizationChain
+from dotenv import load_dotenv
+
+load_dotenv()
 
 loader = PyPDFLoader("example.pdf")
 documents = loader.load()
