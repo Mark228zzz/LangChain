@@ -45,7 +45,9 @@ def main():
     # Agent execution
     problem = input('Write world problem --> ')
 
-    researcher_agent.run(f'Research and solve: {problem}')
+    response = researcher_agent.invoke(f'Research and solve: {problem}', handle_parsing_errors=True)
+
+    print(response['output'])
 
 if __name__ == '__main__':
     main()

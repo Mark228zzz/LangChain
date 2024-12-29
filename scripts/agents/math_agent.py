@@ -30,9 +30,9 @@ def main():
         verbose=True  # When `verbose=True`, the agent provides detailed logs about its reasoning and actions during execution,
     )
 
-    response = agent.run(input('Write your math question\n--> '))
+    response = agent.invoke(input('Write your math question\n--> '), handle_parsing_errors=True)
 
-    print(f'ChatGPT:\n{response}')
+    print(f'ChatGPT:\n{response['output']}')
 
 if __name__ == '__main__':
     main()

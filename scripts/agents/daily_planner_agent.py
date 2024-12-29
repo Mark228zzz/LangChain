@@ -41,9 +41,9 @@ def main():
 
         if query.lower() == "exit":
             break
-        response = agent.run(query)
+        response = agent.invoke(query, handle_parsing_errors=True)
 
-        print(response)
+        print(response['output'])
 
 if __name__ == '__main__':
     main()
