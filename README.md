@@ -69,7 +69,7 @@ load_dotenv()
 ## Usage
 1. Run any script to see LangChain in action:
    ```bash
-   python basic_chatbot.py
+   python greeting.py
    ```
 2. Customize the code to fit your needs.
 
