@@ -29,9 +29,6 @@ class ExerciseOutputParser(BaseOutputParser):
         }
 
 
-
-
-
 def main():
     parser = ExerciseOutputParser()
 
