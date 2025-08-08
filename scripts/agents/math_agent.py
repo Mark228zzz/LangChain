@@ -32,7 +32,7 @@ def main():
 
     response = agent.invoke(input('Write your math question\n--> '), handle_parsing_errors=True)
 
-    print(f'ChatGPT:\n{response['output']}')
+    print(f"ChatGPT:\n{response['output']}")
 
 if __name__ == '__main__':
     main()
