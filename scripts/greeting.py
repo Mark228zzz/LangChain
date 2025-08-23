@@ -6,7 +6,7 @@ def main():
     load_dotenv()
 
     # Create a chat
-    chat = ChatOpenAI(model='gpt-3.5-turbo', temperature=0.7)
+    chat = ChatOpenAI(model='gpt-3.5-turbo', temperature=0.7, max_tokens=100)
 
     # Create a user message
     messages = [{"role": "user", "content": "Hello ChatGPT from LangChain!"}]
