@@ -2,12 +2,14 @@ import streamlit as st
 from backend import start_game, play, add_memory  # your functions
 
 # ------------- Helpers -------------
-def reset(topic: str):
+def reset(topic: str, length: str):
     """Clear per-session state and seed the game."""
     st.session_state.memory = []
     st.session_state.step = 0
     st.session_state.last_response = None
-    start_game(topic, st.session_state.memory)
+
+    start_game(topic, length, st.session_state.memory)
+
     # Immediately play the first turn
     st.session_state.last_response = play(
         st.session_state.model, st.session_state.temp, st.session_state.memory
@@ -44,10 +46,21 @@ with st.sidebar:
     )
     st.session_state.model = model
 
+    length = st.radio('Length of content',
+                      ['Tiny [25-45 words]', 'Small [45-80 words]', 'Medium [80-150 words]', 'Big [150-225 words]', 'Large [225+ words]'],
+                      horizontal=True,
+                      index=2,
+                      captions=[
+                          'Super small talks for a quick game',
+                          'Small chunks of information, still playable',
+                          'Standard size of game content',
+                          'Big content for more information about the game',
+                          'Very big stories for those who like to read'])
+
     temp = st.slider("**Creativity**", 0.0, 1.0, 0.3, 0.05)
     st.session_state.temp = temp
 
-    topic = st.text_area("**Topic**", placeholder="e.g., cyberpunk heist on a floating city")
+    topic = st.text_input("**Topic**", placeholder="e.g., cyberpunk heist on a floating city")
     if not topic:
         st.caption("Topic cannot be empty.")
     start = st.button("**🎮 Start the Game**", use_container_width=True)
@@ -58,7 +71,7 @@ if start:
     if not topic.strip():
         st.warning("Please enter a topic to start.")
     else:
-        reset(topic)
+        reset(topic, length)
         st.rerun()
 
 if restart:
@@ -66,7 +79,7 @@ if restart:
     if not topic.strip():
         st.warning("Enter a topic to restart.")
     else:
-        reset(topic)
+        reset(topic, length)
         st.rerun()
 
 # ------------- Render current step -------------
@@ -83,8 +96,10 @@ st.write(response.game_content)
 for idx, choice in enumerate(response.choices):
     if st.button(choice, key=f"choice_{st.session_state.step}_{idx}", use_container_width=True):
         add_memory("human", f"I choose: {choice}", st.session_state.memory)
+
         st.session_state.step += 1
         st.session_state.last_response = play(
             st.session_state.model, st.session_state.temp, st.session_state.memory
         )
+
         st.rerun()
