@@ -1,2 +1,3 @@
 langchain_env
+scripts/apps/*/__pycache__
 .env
