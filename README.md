@@ -73,6 +73,15 @@ load_dotenv()
    ```
 2. Customize the code to fit your needs.
 
+### Run Streamlit Apps
+
+Most interactive apps are in `scripts/apps/[NAME_OF_AN_APP]/...`. They use streamlit for friendly user interfaces. Backend uses **langchain** and functions as a lib for app.py.
+
+You can launch them from root folder of that repo like this:
+```bash
+streamlit run scripts/apps/[NAME_OF_AN_APP]/app.py
+```
+
 ## Examples
 
 ### Chatbot Example
@@ -110,4 +119,4 @@ print(summary)
 
 Feel free to open issues or submit pull requests to improve the code and add new features. Contributions are welcome!
 
-*Enjoy experimenting with LangChain!*
+***Enjoy experimenting with LangChain!***
