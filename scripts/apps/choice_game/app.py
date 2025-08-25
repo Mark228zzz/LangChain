@@ -5,6 +5,7 @@ from backend import start_game, play, add_memory  # your functions
 def reset(topic: str, length: str):
     """Clear per-session state and seed the game."""
     st.session_state.memory = []
+
     st.session_state.step = 0
     st.session_state.last_response = None
 
@@ -12,7 +13,7 @@ def reset(topic: str, length: str):
 
     # Immediately play the first turn
     st.session_state.last_response = play(
-        st.session_state.model, st.session_state.temp, st.session_state.memory
+        st.session_state.model, st.session_state.temp, st.session_state.memory, summary_last_n, length
     )
 
 def init_state():
@@ -57,9 +58,13 @@ with st.sidebar:
                           'Big content for more information about the game',
                           'Very big stories for those who like to read'])
 
+    summary_last_n = st.slider('Summarize each N step', 5, 50, 25, 1, help='Helps store history of the game in more efficient way. Reduces the amount of input tokens in API calls that leads to cheaper run. Replacing whole memory with its summary (by another LLM) each N step.') + 2
+
+    # Get the temperature
     temp = st.slider("**Creativity**", 0.0, 1.0, 0.3, 0.05)
     st.session_state.temp = temp
 
+    # Get the topic
     topic = st.text_input("**Topic**", placeholder="e.g., cyberpunk heist on a floating city")
     if not topic:
         st.caption("Topic cannot be empty.")
@@ -75,12 +80,11 @@ if start:
         st.rerun()
 
 if restart:
-    # reuse last topic if you keep it; or require user to enter one
-    if not topic.strip():
-        st.warning("Enter a topic to restart.")
-    else:
-        reset(topic, length)
-        st.rerun()
+    # full reset
+    for key in ["memory", "step", "last_response", "model", "temp"]:
+        if key in st.session_state:
+            del st.session_state[key]
+    st.rerun()
 
 # ------------- Render current step -------------
 response = st.session_state.last_response
@@ -99,7 +103,7 @@ for idx, choice in enumerate(response.choices):
 
         st.session_state.step += 1
         st.session_state.last_response = play(
-            st.session_state.model, st.session_state.temp, st.session_state.memory
+            st.session_state.model, st.session_state.temp, st.session_state.memory, summary_last_n, length
         )
 
         st.rerun()

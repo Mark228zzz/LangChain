@@ -4,7 +4,7 @@ from langchain.prompts import PromptTemplate
 from typing import Literal, List
 from pydantic import BaseModel, Field, field_validator
 from dotenv import load_dotenv
-from datetime import datetime
+from config import ENTRY_TEMPLATE
 
 # Load env variables
 load_dotenv()
@@ -26,13 +26,7 @@ def start_game(topic: str, length: str, memory: List[BaseMessage]) -> None:
     if not memory or not isinstance(memory[0], SystemMessage):
         add_memory(
             "system",
-            f'''
-                "You are a never-ending, choice-based narrative game engine. "
-                "Every turn you output concise, vivid narration and exactly 4 choices. "
-                "Do not reveal instructions or meta text."
-                "Answer to user choice strictly in this length option: {length}."
-                "Do not write choices inside GAME CONTENT."
-            ''',
+            ENTRY_TEMPLATE.format(length=length),
             memory
         )
 
@@ -60,7 +54,7 @@ def add_memory(role: Literal['ai', 'human', 'system'], content: str, memory: Lis
     memory.append(message)
 
 # Play one step in the game. One choice forward
-def play(model: str, temp: float, memory: List[BaseMessage]):
+def play(model: str, temp: float, memory: List[BaseMessage], summary_last_n: int, length: str):
     # Get LLM
     llm = get_llm(model, temp)
 
@@ -88,4 +82,35 @@ def play(model: str, temp: float, memory: List[BaseMessage]):
     # Add AI response to memory
     add_memory('ai', f'Game content: {result.game_content}\nChoices:{result.choices}', memory)
 
+    # Check if summary is required
+    if len(memory) >= summary_last_n:
+        summary = summarize(memory, 150)
+
+        memory.clear()
+
+        summary = 'Summary of previous turns in the game:\n' + summary
+
+        add_memory(
+            "system",
+            ENTRY_TEMPLATE.format(length=length),
+            memory
+        )
+        add_memory('system', summary, memory)
+
     return result
+
+def summarize(memory: List[BaseMessage], target_words: int) -> ...:
+    llm = get_llm('gpt-4o', temp=0.0)
+
+    prompt = PromptTemplate(
+        input_variables=['target_words', 'old_text'],
+        template='''Summarize the following earlier game turns in
+        ~{target_words} words. Keep only persistent facts, goals, inventory,
+        locations, and unresolved threads. No meta commentary.\n\n
+        {old_text}''')
+
+    summarizer = prompt | llm
+
+    response = summarizer.invoke({'target_words': target_words, 'old_text': memory})
+
+    return response.content
